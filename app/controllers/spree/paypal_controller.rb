@@ -96,7 +96,8 @@ module Spree
           :LandingPage => payment_method.preferred_landing_page.present? ? payment_method.preferred_landing_page : "Billing",
           :cppheaderimage => payment_method.preferred_logourl.present? ? payment_method.preferred_logourl : "",
           :NoShipping => 1,
-          :PaymentDetails => [payment_details(items)]
+          :PaymentDetails => [payment_details(items)],
+          :BillingAgreementDetails => [billing_agreement_details(order)]
       }}
     end
 
@@ -106,6 +107,13 @@ module Spree
 
     def provider
       payment_method.provider
+    end
+
+    def billing_agreement_details(order)
+      {
+        :BillingType => order.billing_type,
+        :BillingAgreementDescription => order.billing_agreement_description
+      }
     end
 
     def payment_details items
@@ -148,7 +156,7 @@ module Spree
           :ShipToAddress => address_options,
           :PaymentDetailsItem => items,
           :ShippingMethod => "Shipping Method Name Goes Here",
-          :PaymentAction => "Sale"
+          :PaymentAction => Spree::Config[:auto_capture] ? "Sale" : "Authorization"
         }
       end
     end
