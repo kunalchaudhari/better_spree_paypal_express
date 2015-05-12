@@ -110,6 +110,7 @@ module Spree
     end
 
     def billing_agreement_details(order)
+      return {} if order.billing_type.blank?
       {
         :BillingType => order.billing_type,
         :BillingAgreementDescription => order.billing_agreement_description
