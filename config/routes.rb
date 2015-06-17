@@ -4,6 +4,11 @@ Spree::Core::Engine.add_routes do
   get '/paypal/cancel', :to => "paypal#cancel", :as => :cancel_paypal
   get '/paypal/notify', :to => "paypal#notify", :as => :notify_paypal
 
+  namespace :api, defaults: { format: 'json' }  do
+    post '/orders/:number/paypal/start', :to => "paypal#express"
+    post '/orders/:number/paypal/confirm', :to => "paypal#confirm"
+  end
+
   namespace :admin do
     # Using :only here so it doesn't redraw those routes
     resources :orders, :only => [] do
